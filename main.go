@@ -13,13 +13,6 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-// ─────────────────────────────────────────────────────────────────────────
-// API types
-// ─────────────────────────────────────────────────────────────────────────
-
-// flexString unmarshals a JSON value that may arrive as either a string or
-// a number into a plain string, since the worldcup26.ir API is inconsistent
-// about it (mirrors what `jq -r` does for free).
 type flexString string
 
 func (f *flexString) UnmarshalJSON(b []byte) error {
@@ -95,12 +88,6 @@ func teamNameMap(t teamsResp) map[string]string {
 	return m
 }
 
-// ─────────────────────────────────────────────────────────────────────────
-// Date helpers (mirrors TODAY/YESTERDAY + `date -d` handling in the bash
-// version, but tries a handful of layouts since the API's exact format
-// isn't guaranteed).
-// ─────────────────────────────────────────────────────────────────────────
-
 func todayStr() string     { return time.Now().Format("01/02/2006") }
 func yesterdayStr() string { return time.Now().AddDate(0, 0, -1).Format("01/02/2006") }
 
@@ -122,10 +109,6 @@ func parseLocalDate(s string) (time.Time, bool) {
 	}
 	return time.Time{}, false
 }
-
-// ─────────────────────────────────────────────────────────────────────────
-// Row (one match, formatted for display)
-// ─────────────────────────────────────────────────────────────────────────
 
 type statusKind int
 
@@ -191,10 +174,6 @@ func buildRow(gm apiGame, names map[string]string) row {
 		timeText: timeText, statusText: statusText, kind: kind,
 	}
 }
-
-// ─────────────────────────────────────────────────────────────────────────
-// Bubble Tea messages / commands
-// ─────────────────────────────────────────────────────────────────────────
 
 type liveMsg struct {
 	rows []row
@@ -266,10 +245,6 @@ func fetchHistoryCmd() tea.Msg {
 	return historyMsg{rows: rows}
 }
 
-// ─────────────────────────────────────────────────────────────────────────
-// Styling — glossy, dark, rounded
-// ─────────────────────────────────────────────────────────────────────────
-
 var (
 	colBg       = lipgloss.Color("#11121a")
 	colBorder   = lipgloss.Color("#89b4fa")
@@ -338,10 +313,6 @@ func badge(k statusKind, text string) string {
 		return badgeUpcoming.Render("◷ " + text)
 	}
 }
-
-// ─────────────────────────────────────────────────────────────────────────
-// Model
-// ─────────────────────────────────────────────────────────────────────────
 
 type view int
 
@@ -505,10 +476,6 @@ func (m model) updateSubpage(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 	return m, nil
 }
 
-// ─────────────────────────────────────────────────────────────────────────
-// View
-// ─────────────────────────────────────────────────────────────────────────
-
 func (m model) View() string {
 	if m.quitting {
 		return lipgloss.NewStyle().Foreground(colAccent).Padding(1, 2).Render(
@@ -615,10 +582,6 @@ func truncate(s string, w int) string {
 	}
 	return s[:w-1] + "…"
 }
-
-// ─────────────────────────────────────────────────────────────────────────
-// main
-// ─────────────────────────────────────────────────────────────────────────
 
 func main() {
 	p := tea.NewProgram(initialModel(), tea.WithAltScreen())
