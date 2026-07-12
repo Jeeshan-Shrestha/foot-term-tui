@@ -12,7 +12,6 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
-
 type flexString string
 
 func (f *flexString) UnmarshalJSON(b []byte) error {
@@ -87,7 +86,6 @@ func teamNameMap(t teamsResp) map[string]string {
 	}
 	return m
 }
-
 func todayStr() string     { return time.Now().Format("01/02/2006") }
 func yesterdayStr() string { return time.Now().AddDate(0, 0, -1).Format("01/02/2006") }
 
@@ -109,7 +107,6 @@ func parseLocalDate(s string) (time.Time, bool) {
 	}
 	return time.Time{}, false
 }
-
 type statusKind int
 
 const (
@@ -174,7 +171,6 @@ func buildRow(gm apiGame, names map[string]string) row {
 		timeText: timeText, statusText: statusText, kind: kind,
 	}
 }
-
 type liveMsg struct {
 	rows []row
 	err  error
@@ -244,7 +240,6 @@ func fetchHistoryCmd() tea.Msg {
 	}
 	return historyMsg{rows: rows}
 }
-
 var (
 	colBg       = lipgloss.Color("#11121a")
 	colBorder   = lipgloss.Color("#89b4fa")
@@ -313,6 +308,7 @@ func badge(k statusKind, text string) string {
 		return badgeUpcoming.Render("◷ " + text)
 	}
 }
+
 
 type view int
 
@@ -494,7 +490,11 @@ func (m model) View() string {
 		body = m.renderPage("📜 YESTERDAY'S RESULTS", m.historyRows, false)
 	}
 
-	return appStyle.Render(body)
+	body = appStyle.Render(body)
+	if m.width > 0 && m.height > 0 {
+		return lipgloss.Place(m.width, m.height, lipgloss.Center, lipgloss.Center, body)
+	}
+	return body
 }
 
 func (m model) renderMenu() string {
@@ -582,10 +582,10 @@ func truncate(s string, w int) string {
 	}
 	return s[:w-1] + "…"
 }
-
 func main() {
 	p := tea.NewProgram(initialModel(), tea.WithAltScreen())
 	if _, err := p.Run(); err != nil {
 		fmt.Println("Error running foot-term:", err)
 	}
 }
+
