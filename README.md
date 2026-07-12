@@ -1,10 +1,5 @@
 # foot-term (TUI)
 
-A Bubble Tea port of your `foot-term` bash script — same data source
-(`worldcup26.ir`), same three views (Live / Schedule / History), each now
-its own scrollable page with a glossy dark rounded-border UI instead of
-`echo`/`printf`.
-
 ## Build & run
 
 ```bash
@@ -13,9 +8,6 @@ go mod tidy   # resolves golang.org/x/* normally on your machine
 go build -o foot-term .
 ./foot-term
 ```
-
-Requires Go 1.22+. No `jq`/`curl`/`bash date` needed — HTTP + JSON parsing
-and date handling are done natively in Go.
 
 ## Controls
 
